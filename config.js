@@ -29,8 +29,8 @@ const ENV_CONFIG = {
       return '/t-mobile';
     }
 
-    // Default path for GitHub Pages or local development
-    return '/t-mobile';
+    // For GitHub Pages and local development, use relative paths
+    return '.';
   },
 
   // Get full asset path
