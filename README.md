@@ -6,9 +6,20 @@ A fun, installable Progressive Web App (PWA) recreation of the classic Chrome di
 
 ## Setup on Chromebook (No Linux Required)
 
-This game works perfectly on Chromebooks without needing Linux or developer mode. Follow these simple steps:
+This game works perfectly on Chromebooks without needing Linux or developer mode. Choose one of these methods:
 
-### Quick Start (3 Easy Steps)
+### Method 1: GitHub Pages (Easiest - Just Click and Play!)
+
+**Play Now:** Visit the live game at:
+```
+https://tannerpace.github.io/t-mobile/
+```
+
+That's it! The game is already hosted and ready to play.
+
+---
+
+### Method 2: VS Code for the Web (If You Want to Edit Code)
 
 1. **Open VS Code for the Web**
    - Go to [vscode.dev](https://vscode.dev) in your Chrome browser
@@ -20,19 +31,35 @@ This game works perfectly on Chromebooks without needing Linux or developer mode
    - Type: `tannerpace/t-mobile`
    - Press Enter
 
-3. **Preview the Game**
+3. **Install Live Preview Extension (One-time setup)**
+   - When prompted to install recommended extensions, click "Install"
+   - Or manually: Click the Extensions icon (puzzle piece) on the left sidebar
+   - Search for "Live Preview"
+   - Install the "Live Preview" extension by Microsoft
+
+4. **Preview the Game**
    - Click on `index.html` in the file explorer
    - Right-click on `index.html` and select "Show Preview"
+   - OR click the preview icon (magnifying glass with play button) in the top right
    - Start playing!
 
-### Alternative: Direct Link
-
-Simply visit this URL in your Chrome browser:
+**Quick Link:** Open directly at:
 ```
 https://vscode.dev/github/tannerpace/t-mobile
 ```
 
-Then right-click `index.html` → Show Preview
+---
+
+### Setting Up GitHub Pages (For Repository Owners)
+
+If you forked this repo and want your own hosted version:
+
+1. Go to your repository on GitHub
+2. Click **Settings** → **Pages** (in the left sidebar)
+3. Under "Source", select **main** branch
+4. Click **Save**
+5. Wait 1-2 minutes for deployment
+6. Visit: `https://YOUR-USERNAME.github.io/t-mobile/`
 
 ## How to Play
 
