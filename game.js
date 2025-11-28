@@ -512,6 +512,40 @@ canvas.addEventListener('click', () => {
   }
 });
 
+// Mobile button controls
+const jumpBtn = document.getElementById('jumpBtn');
+const shootBtn = document.getElementById('shootBtn');
+
+// Shared function to handle game state and execute action
+function handleGameAction(actionDuringGame) {
+  if (!gameRunning && !gameOver) {
+    gameRunning = true;
+  } else if (gameOver) {
+    resetGame();
+    gameRunning = true;
+  } else if (gameRunning) {
+    actionDuringGame();
+  }
+}
+
+// Jump button event handlers
+function handleJump(e) {
+  e.preventDefault();
+  handleGameAction(() => dino.jump());
+}
+
+jumpBtn.addEventListener('touchstart', handleJump);
+jumpBtn.addEventListener('click', handleJump);
+
+// Shoot button event handlers
+function handleShoot(e) {
+  e.preventDefault();
+  handleGameAction(shootBullet);
+}
+
+shootBtn.addEventListener('touchstart', handleShoot);
+shootBtn.addEventListener('click', handleShoot);
+
 // Initial draw
 console.log('Starting game loop...');
 gameLoop();

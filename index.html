@@ -29,10 +29,14 @@
       <span class="score">HI <span id="highScore">00000</span></span>
       <span class="score"><span id="currentScore">00000</span></span>
     </div>
-    <canvas id="gameCanvas" width="800" height="200"></canvas>
+    <div class="canvas-wrapper">
+      <canvas id="gameCanvas" width="800" height="200"></canvas>
+      <button id="jumpBtn" class="mobile-btn jump-btn" aria-label="Jump">↑</button>
+      <button id="shootBtn" class="mobile-btn shoot-btn" aria-label="Shoot">⚡</button>
+    </div>
     <div class="instructions">
-      <p>Press <strong>SPACE</strong> or <strong>↑</strong> to jump</p>
-      <p>Press <strong>SPACE</strong> to restart</p>
+      <p>Press <strong>SPACE</strong> or <strong>↑</strong> to jump | <strong>Z</strong> to shoot</p>
+      <p>Press <strong>SPACE</strong> to restart | Mobile: Tap <strong>↑</strong> / <strong>⚡</strong></p>
     </div>
   </div>
   <script src="game.js"></script>
