@@ -22,6 +22,12 @@ jumpSound.volume = 0.5;
 const powerUpSound = new Audio('yum yum.m4a');
 powerUpSound.volume = 0.5;
 
+// Load images
+const trexImg = new Image();
+trexImg.src = 'trex.png';
+const palmImg = new Image();
+palmImg.src = 'palm.png';
+
 // Dino object
 const dino = {
   x: 50,
@@ -34,52 +40,14 @@ const dino = {
   jumping: false,
 
   draw() {
-    ctx.fillStyle = '#535353';
-    const legOffset = Math.floor(frameCount / 5) % 2 === 0 ? 0 : 3;
-
-    // Body (main torso)
-    ctx.fillRect(this.x + 6, this.y + 10, 28, 24);
-
-    // Neck
-    ctx.fillRect(this.x + 28, this.y + 4, 6, 16);
-
-    // Head
-    ctx.fillRect(this.x + 28, this.y, 16, 10);
-    ctx.fillRect(this.x + 34, this.y - 4, 10, 8);
-
-    // Snout/mouth
-    ctx.fillRect(this.x + 40, this.y + 2, 4, 4);
-
-    // Eye
-    ctx.fillStyle = 'white';
-    ctx.fillRect(this.x + 36, this.y + 1, 3, 3);
-    ctx.fillStyle = '#000';
-    ctx.fillRect(this.x + 37, this.y + 1, 2, 2);
-
-    // Tail
-    ctx.fillStyle = '#535353';
-    ctx.fillRect(this.x, this.y + 14, 8, 6);
-    ctx.fillRect(this.x - 4, this.y + 10, 6, 6);
-    ctx.fillRect(this.x - 6, this.y + 6, 4, 6);
-
-    // Arms (tiny T-Rex arms)
-    ctx.fillRect(this.x + 26, this.y + 18, 3, 8);
-    ctx.fillRect(this.x + 26, this.y + 24, 4, 2);
-
-    // Legs (with animation)
-    if (!this.grounded) {
-      // Both legs together when jumping
-      ctx.fillRect(this.x + 10, this.y + 34, 6, 10);
-      ctx.fillRect(this.x + 22, this.y + 34, 6, 10);
+    // Draw T-Rex image
+    if (trexImg.complete) {
+      ctx.drawImage(trexImg, this.x, this.y, this.width, this.height);
     } else {
-      // Alternating legs when running
-      ctx.fillRect(this.x + 10, this.y + 34 - legOffset, 6, 10 + legOffset);
-      ctx.fillRect(this.x + 22, this.y + 34 + legOffset, 6, 10 - legOffset);
+      // Fallback while image loads
+      ctx.fillStyle = '#535353';
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-
-    // Feet
-    ctx.fillRect(this.x + 8, this.y + 44, 8, 2);
-    ctx.fillRect(this.x + 20, this.y + 44, 8, 2);
   },
 
   update() {
@@ -126,8 +94,14 @@ class Obstacle {
   }
 
   draw() {
-    ctx.fillStyle = '#535353';
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    // Draw palm tree image
+    if (palmImg.complete) {
+      ctx.drawImage(palmImg, this.x, this.y, this.width, this.height);
+    } else {
+      // Fallback while image loads
+      ctx.fillStyle = '#535353';
+      ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
   }
 
   update() {
@@ -210,10 +184,51 @@ class PowerUp {
   }
 }
 
+// Bullet class
+class Bullet {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 10;
+    this.height = 4;
+    this.speed = 8;
+    this.active = true;
+  }
+
+  draw() {
+    if (!this.active) return;
+
+    ctx.fillStyle = '#FF4500'; // Orange-red bullet
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    // Bullet glow effect
+    ctx.fillStyle = '#FFA500';
+    ctx.fillRect(this.x + 2, this.y + 1, 6, 2);
+  }
+
+  update() {
+    if (this.active) {
+      this.x += this.speed;
+    }
+  }
+
+  checkCollision(obstacle) {
+    if (!this.active) return false;
+
+    return (
+      this.x < obstacle.x + obstacle.width &&
+      this.x + this.width > obstacle.x &&
+      this.y < obstacle.y + obstacle.height &&
+      this.y + this.height > obstacle.y
+    );
+  }
+}
+
 // Game arrays
 let obstacles = [];
 let clouds = [new Cloud(), new Cloud(), new Cloud()];
 let powerUps = [];
+let bullets = [];
 let frameCount = 0;
 
 // Collision detection
@@ -241,6 +256,19 @@ function spawnPowerUp() {
   // Spawn power-up randomly (less frequent than obstacles)
   if (Math.random() < 0.3) {
     powerUps.push(new PowerUp());
+  }
+}
+
+// Shoot bullet
+function shootBullet() {
+  if (powerUpCount > 0) {
+    // Shoot from dino's mouth position
+    const bulletY = dino.y + dino.height / 2;
+    bullets.push(new Bullet(dino.x + dino.width, bulletY));
+    powerUpCount--;
+    console.log('Bullet fired! Remaining power-ups:', powerUpCount);
+  } else {
+    console.log('No power-ups! Collect power-ups to shoot.');
   }
 }
 
@@ -307,6 +335,7 @@ function drawStartScreen() {
 function resetGame() {
   obstacles = [];
   powerUps = [];
+  bullets = [];
   score = 0;
   gameSpeed = 3;
   frameCount = 0;
@@ -370,7 +399,7 @@ function gameLoop() {
     // Check if dino collected the power-up
     if (powerUp.checkCollision(dino)) {
       powerUp.collected = true;
-      powerUpCount++;
+      powerUpCount += 3; // Give 3 ammo per power-up
       console.log('Power-up collected! Total:', powerUpCount);
 
       // Play power-up sound
@@ -381,6 +410,28 @@ function gameLoop() {
     // Remove off-screen or collected power-ups
     if (powerUp.x + powerUp.width < 0 || powerUp.collected) {
       powerUps.splice(index, 1);
+    }
+  });
+
+  // Update and draw bullets
+  bullets.forEach((bullet, bulletIndex) => {
+    bullet.update();
+    bullet.draw();
+
+    // Check collision with obstacles
+    obstacles.forEach((obstacle, obstacleIndex) => {
+      if (bullet.checkCollision(obstacle)) {
+        // Remove both bullet and obstacle
+        bullet.active = false;
+        obstacles.splice(obstacleIndex, 1);
+        bullets.splice(bulletIndex, 1);
+        console.log('Hit! Obstacle destroyed.');
+      }
+    });
+
+    // Remove off-screen bullets
+    if (bullet.x > canvas.width) {
+      bullets.splice(bulletIndex, 1);
     }
   });
 
@@ -440,6 +491,12 @@ document.addEventListener('keydown', (e) => {
       console.log('Attempting to jump...');
       dino.jump();
     }
+  }
+
+  // Shoot bullet with Z key
+  if (e.code === 'KeyZ' && gameRunning && !gameOver) {
+    e.preventDefault();
+    shootBullet();
   }
 });
 
