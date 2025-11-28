@@ -19,6 +19,11 @@ This guide covers the fundamentals of JavaScript functions and semicolons. These
   - [When to Use Semicolons](#when-to-use-semicolons)
   - [Automatic Semicolon Insertion (ASI)](#automatic-semicolon-insertion-asi)
 - [MDN Documentation Links](#mdn-documentation-links)
+- [Practice with This Game](#practice-with-this-game)
+  - [How to Modify Code and See Results](#how-to-modify-code-and-see-results)
+  - [Try It Yourself: Hands-On Exercises](#try-it-yourself-hands-on-exercises)
+  - [Code Reading Exercises](#code-reading-exercises)
+  - [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -515,7 +520,191 @@ Here are essential MDN (Mozilla Developer Network) references for learning more 
 
 ## Practice with This Game
 
-The best way to learn is by practicing! Try these exercises with the game code:
+The best way to learn is by practicing! Try these exercises with the game code.
+
+### How to Modify Code and See Results
+
+Follow these steps to make changes and see them in action:
+
+#### Step 1: Open the Project
+
+**Using VS Code for the Web (easiest):**
+1. Go to [vscode.dev](https://vscode.dev)
+2. Open the repository (see README.md for detailed instructions)
+3. Install the "Live Preview" extension if not already installed
+
+**Using Local Development:**
+1. Open the project folder in VS Code or any code editor
+2. Open `index.html` in your web browser
+3. After making changes, refresh the browser to see results
+
+#### Step 2: Open the Browser Console
+
+The browser console shows messages from `console.log()` - essential for seeing your code changes work!
+
+1. Open `index.html` in your browser (or use Live Preview in VS Code)
+2. Press `F12` or right-click and select "Inspect"
+3. Click the "Console" tab
+4. You'll see messages like "Game initialized" - this confirms JavaScript is running
+
+---
+
+### Try It Yourself: Hands-On Exercises
+
+#### Exercise 1: Change the Jump Power
+
+**Goal:** Make the dinosaur jump higher or lower.
+
+**File to edit:** `game.js`
+
+**Find this code (around line 38):**
+```javascript
+const dino = {
+  x: 50,
+  y: 150,
+  width: 40,
+  height: 44,
+  dy: 0,
+  jumpPower: -12,  // <-- Change this value!
+  grounded: false,
+  jumping: false,
+```
+
+**Try these changes:**
+- Change `jumpPower: -12` to `jumpPower: -18` for a SUPER high jump
+- Change `jumpPower: -12` to `jumpPower: -8` for a tiny hop
+
+**See the result:**
+1. Save the file
+2. Refresh your browser (or Live Preview updates automatically)
+3. Press SPACE to start the game and jump!
+
+---
+
+#### Exercise 2: Add a Console Message
+
+**Goal:** Add your own message that appears when the dino jumps.
+
+**File to edit:** `game.js`
+
+**Find the jump method (around line 70):**
+```javascript
+  jump() {
+    console.log('Jump called! grounded:', this.grounded, 'jumping:', this.jumping);
+    if (this.grounded && !this.jumping) {
+      this.dy = this.jumpPower;
+      this.jumping = true;
+      console.log('JUMP! dy set to:', this.dy);
+```
+
+**Add your own message:**
+```javascript
+  jump() {
+    console.log('Jump called! grounded:', this.grounded, 'jumping:', this.jumping);
+    if (this.grounded && !this.jumping) {
+      this.dy = this.jumpPower;
+      this.jumping = true;
+      console.log('JUMP! dy set to:', this.dy);
+      console.log('🦖 The dinosaur is jumping!');  // <-- Add this line!
+```
+
+**See the result:**
+1. Save the file
+2. Refresh the browser
+3. Open the Console (F12 → Console tab)
+4. Press SPACE to jump and watch your message appear!
+
+---
+
+#### Exercise 3: Change the Game Speed
+
+**Goal:** Make the game start faster or slower.
+
+**File to edit:** `game.js`
+
+**Find this code (around line 10):**
+```javascript
+let gameSpeed = 3;  // <-- Change this value!
+```
+
+**Try these changes:**
+- Change to `let gameSpeed = 1;` for slow motion
+- Change to `let gameSpeed = 6;` for a fast challenge
+
+**See the result:**
+1. Save and refresh
+2. Start the game - obstacles will move at your new speed!
+
+---
+
+#### Exercise 4: Change Obstacle Spawn Rate
+
+**Goal:** Make obstacles appear more or less frequently.
+
+**File to edit:** `game.js`
+
+**Find this code (around line 385):**
+```javascript
+  // Spawn obstacles
+  frameCount++;
+  if (frameCount % 100 === 0) {  // <-- Change 100 to another number
+    spawnObstacle();
+  }
+```
+
+**Try these changes:**
+- Change `100` to `50` for more frequent obstacles (harder!)
+- Change `100` to `200` for fewer obstacles (easier!)
+
+**See the result:**
+1. Save and refresh
+2. Play the game and notice the obstacle frequency
+
+---
+
+#### Exercise 5: Create Your Own Function
+
+**Goal:** Write a new function and call it.
+
+**File to edit:** `game.js`
+
+**Add this new function anywhere before the `gameLoop` function:**
+```javascript
+// My custom function!
+function celebrateScore() {
+  if (score > 0 && score % 500 === 0) {
+    console.log('🎉 Amazing! You reached ' + Math.floor(score / 10) + ' points!');
+  }
+}
+```
+
+**Then find the `updateScore` function and add a call to your new function:**
+```javascript
+function updateScore() {
+  if (gameRunning && !gameOver) {
+    score++;
+    document.getElementById('currentScore').textContent = String(Math.floor(score / 10)).padStart(5, '0');
+    
+    celebrateScore();  // <-- Add this line to call your function!
+
+    // Increase difficulty
+    if (score % 200 === 0) {
+      gameSpeed += 0.5;
+    }
+  }
+}
+```
+
+**See the result:**
+1. Save and refresh
+2. Open the Console (F12)
+3. Play the game and watch for celebration messages every 50 points!
+
+---
+
+### Code Reading Exercises
+
+Once you're comfortable making changes, try these exploration exercises:
 
 1. **Find function declarations** in `game.js` - look for functions like `checkCollision`, `spawnObstacle`, and `resetGame`
 
@@ -526,6 +715,25 @@ The best way to learn is by practicing! Try these exercises with the game code:
 4. **Trace function invocations** - follow how `gameLoop()` calls other functions like `dino.update()` and `obstacle.draw()`
 
 5. **Check semicolon usage** - notice how semicolons are used consistently after statements but not after function/class declarations
+
+---
+
+### Troubleshooting
+
+**Nothing happens when I save:**
+- Make sure you saved the file (Ctrl+S or Cmd+S)
+- Refresh the browser page
+- Check the Console for error messages (red text)
+
+**I see a red error in the Console:**
+- The error message tells you which line has a problem
+- Check for typos, missing brackets `{}`, or missing semicolons
+- Undo your changes (Ctrl+Z) and try again
+
+**The game won't start:**
+- Open the Console and look for errors
+- Make sure you didn't accidentally delete important code
+- You can always re-download the original files from GitHub
 
 ---
 
