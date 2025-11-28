@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Generate Icons</title>
+</head>
+
+<body>
+  <canvas id="canvas192" width="192" height="192"></canvas>
+  <canvas id="canvas512" width="512" height="512"></canvas>
+  <script>
+    function drawDinoIcon(canvas) {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+      const scale = size / 192;
+
+      // Background
+      ctx.fillStyle = '#f7f7f7';
+      ctx.fillRect(0, 0, size, size);
+
+      // Draw dino centered and scaled
+      ctx.fillStyle = '#535353';
+      const baseX = size * 0.3;
+      const baseY = size * 0.25;
+      const s = scale * 3;
+
+      // Body
+      ctx.fillRect(baseX + 6 * s, baseY + 10 * s, 28 * s, 24 * s);
+      // Neck
+      ctx.fillRect(baseX + 28 * s, baseY + 4 * s, 6 * s, 16 * s);
+      // Head
+      ctx.fillRect(baseX + 28 * s, baseY, 16 * s, 10 * s);
+      ctx.fillRect(baseX + 34 * s, baseY - 4 * s, 10 * s, 8 * s);
+      // Snout
+      ctx.fillRect(baseX + 40 * s, baseY + 2 * s, 4 * s, 4 * s);
+      // Eye
+      ctx.fillStyle = 'white';
+      ctx.fillRect(baseX + 36 * s, baseY + 1 * s, 3 * s, 3 * s);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(baseX + 37 * s, baseY + 1 * s, 2 * s, 2 * s);
+      // Tail
+      ctx.fillStyle = '#535353';
+      ctx.fillRect(baseX, baseY + 14 * s, 8 * s, 6 * s);
+      ctx.fillRect(baseX - 4 * s, baseY + 10 * s, 6 * s, 6 * s);
+      ctx.fillRect(baseX - 6 * s, baseY + 6 * s, 4 * s, 6 * s);
+      // Arms
+      ctx.fillRect(baseX + 26 * s, baseY + 18 * s, 3 * s, 8 * s);
+      ctx.fillRect(baseX + 26 * s, baseY + 24 * s, 4 * s, 2 * s);
+      // Legs
+      ctx.fillRect(baseX + 10 * s, baseY + 34 * s, 6 * s, 10 * s);
+      ctx.fillRect(baseX + 22 * s, baseY + 34 * s, 6 * s, 10 * s);
+      // Feet
+      ctx.fillRect(baseX + 8 * s, baseY + 44 * s, 8 * s, 2 * s);
+      ctx.fillRect(baseX + 20 * s, baseY + 44 * s, 8 * s, 2 * s);
+    }
+
+    // Generate both icons
+    drawDinoIcon(document.getElementById('canvas192'));
+    drawDinoIcon(document.getElementById('canvas512'));
+
+    // Download links
+    setTimeout(() => {
+      const canvas192 = document.getElementById('canvas192');
+      const canvas512 = document.getElementById('canvas512');
+
+      canvas192.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'icon-192.png';
+        a.click();
+      });
+
+      setTimeout(() => {
+        canvas512.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'icon-512.png';
+          a.click();
+        });
+      }, 500);
+    }, 100);
+  </script>
+</body>
+
+</html>

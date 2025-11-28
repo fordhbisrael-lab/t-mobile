@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A fun Chrome Dino game clone - jump over obstacles and beat your high score!">
+  <meta name="theme-color" content="#535353">
+  <title>Chrome Dino Game Clone</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Dino Game">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="game-container">
+    <div class="score-container">
+      <span class="score">HI <span id="highScore">00000</span></span>
+      <span class="score"><span id="currentScore">00000</span></span>
+    </div>
+    <canvas id="gameCanvas" width="800" height="200"></canvas>
+    <div class="instructions">
+      <p>Press <strong>SPACE</strong> or <strong>↑</strong> to jump</p>
+      <p>Press <strong>SPACE</strong> to restart</p>
+    </div>
+  </div>
+  <script src="game.js"></script>
+  <script>
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('ServiceWorker registration successful');
+          })
+          .catch((err) => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+</body>
+
+</html>

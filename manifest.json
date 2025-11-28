@@ -1,0 +1,24 @@
+{
+  "name": "Chrome Dino Game",
+  "short_name": "Dino Game",
+  "description": "A fun Chrome Dino game clone - jump over obstacles and beat your high score!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f7",
+  "theme_color": "#535353",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
