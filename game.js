@@ -7,13 +7,20 @@ let gameOver = false;
 let score = 0;
 let highScore = localStorage.getItem('dinoHighScore') || 0;
 let animationId;
-let gameSpeed = 5;
+let gameSpeed = 3;
 let gravity = 0.6;
+let powerUpCount = 0;
 
 // Update high score display
 document.getElementById('highScore').textContent = String(highScore).padStart(5, '0');
 
 console.log('Game initialized. gameRunning:', gameRunning, 'gameOver:', gameOver);
+
+// Audio
+const jumpSound = new Audio('pop.m4a');
+jumpSound.volume = 0.5;
+const powerUpSound = new Audio('yum yum.m4a');
+powerUpSound.volume = 0.5;
 
 // Dino object
 const dino = {
@@ -28,7 +35,7 @@ const dino = {
 
   draw() {
     ctx.fillStyle = '#535353';
-    const legOffset = Math.floor(score / 5) % 2 === 0 ? 0 : 3;
+    const legOffset = Math.floor(frameCount / 5) % 2 === 0 ? 0 : 3;
 
     // Body (main torso)
     ctx.fillRect(this.x + 6, this.y + 10, 28, 24);
@@ -98,6 +105,10 @@ const dino = {
       this.dy = this.jumpPower;
       this.jumping = true;
       console.log('JUMP! dy set to:', this.dy);
+
+      // Play jump sound
+      jumpSound.currentTime = 0; // Reset to start
+      jumpSound.play().catch(e => console.log('Audio play failed:', e));
     } else {
       console.log('Cannot jump - conditions not met');
     }
@@ -149,9 +160,60 @@ class Cloud {
   }
 }
 
+// PowerUp class
+class PowerUp {
+  constructor() {
+    this.x = canvas.width + Math.random() * 400;
+    this.y = 100 + Math.random() * 40;
+    this.width = 20;
+    this.height = 20;
+    this.speed = gameSpeed * 0.8;
+    this.collected = false;
+  }
+
+  draw() {
+    if (this.collected) return;
+
+    // Draw a glowing power-up orb
+    ctx.fillStyle = '#FFD700'; // Gold color
+    ctx.fillRect(this.x + 5, this.y, 10, 20);
+    ctx.fillRect(this.x, this.y + 5, 20, 10);
+
+    // Inner glow
+    ctx.fillStyle = '#FFF8DC';
+    ctx.fillRect(this.x + 8, this.y + 8, 4, 4);
+
+    // Sparkle effect
+    const sparkle = Math.floor(frameCount / 10) % 2 === 0;
+    if (sparkle) {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(this.x + 2, this.y + 10, 2, 2);
+      ctx.fillRect(this.x + 16, this.y + 10, 2, 2);
+    }
+  }
+
+  update() {
+    if (!this.collected) {
+      this.x -= this.speed;
+    }
+  }
+
+  checkCollision(dino) {
+    if (this.collected) return false;
+
+    return (
+      dino.x < this.x + this.width &&
+      dino.x + dino.width > this.x &&
+      dino.y < this.y + this.height &&
+      dino.y + dino.height > this.y
+    );
+  }
+}
+
 // Game arrays
 let obstacles = [];
 let clouds = [new Cloud(), new Cloud(), new Cloud()];
+let powerUps = [];
 let frameCount = 0;
 
 // Collision detection
@@ -172,6 +234,22 @@ function spawnObstacle() {
   if (!lastObstacle || canvas.width - lastObstacle.x > minDistance) {
     obstacles.push(new Obstacle());
   }
+}
+
+// Spawn power-ups
+function spawnPowerUp() {
+  // Spawn power-up randomly (less frequent than obstacles)
+  if (Math.random() < 0.3) {
+    powerUps.push(new PowerUp());
+  }
+}
+
+// Draw power-up counter
+function drawPowerUpCounter() {
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 16px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('⚡ x ' + powerUpCount, 20, 30);
 }
 
 // Update score
@@ -228,14 +306,16 @@ function drawStartScreen() {
 // Reset game
 function resetGame() {
   obstacles = [];
+  powerUps = [];
   score = 0;
-  gameSpeed = 5;
+  gameSpeed = 3;
   frameCount = 0;
   dino.y = 150;
   dino.dy = 0;
   dino.jumping = false;
   dino.grounded = false;
   gameOver = false;
+  powerUpCount = 0;
   document.getElementById('currentScore').textContent = '00000';
 }
 
@@ -277,6 +357,33 @@ function gameLoop() {
     spawnObstacle();
   }
 
+  // Spawn power-ups occasionally
+  if (frameCount % 250 === 0) {
+    spawnPowerUp();
+  }
+
+  // Update and draw power-ups
+  powerUps.forEach((powerUp, index) => {
+    powerUp.update();
+    powerUp.draw();
+
+    // Check if dino collected the power-up
+    if (powerUp.checkCollision(dino)) {
+      powerUp.collected = true;
+      powerUpCount++;
+      console.log('Power-up collected! Total:', powerUpCount);
+
+      // Play power-up sound
+      powerUpSound.currentTime = 0;
+      powerUpSound.play().catch(e => console.log('Audio play failed:', e));
+    }
+
+    // Remove off-screen or collected power-ups
+    if (powerUp.x + powerUp.width < 0 || powerUp.collected) {
+      powerUps.splice(index, 1);
+    }
+  });
+
   // Update and draw obstacles
   obstacles.forEach((obstacle, index) => {
     obstacle.update();
@@ -301,6 +408,9 @@ function gameLoop() {
       obstacles.splice(index, 1);
     }
   });
+
+  // Draw power-up counter
+  drawPowerUpCounter();
 
   // Update score
   updateScore();
