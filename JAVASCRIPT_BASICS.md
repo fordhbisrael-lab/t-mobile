@@ -311,7 +311,7 @@ function getScore() {
 ```javascript
 console.log('Game started');
 ctx.clearRect(0, 0, canvas.width, canvas.height);
-jumpSound.play().catch(e => console.log('Error:', e));
+jumpSound.play().catch((e) => console.log('Error:', e));
 ```
 
 **Do NOT use semicolons after:**
