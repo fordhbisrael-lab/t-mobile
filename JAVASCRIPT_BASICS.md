@@ -228,42 +228,153 @@ ctx.fillRect(this.x, this.y, this.width, this.height);
 
 ### Callback Functions
 
-A callback is a function passed as an argument to another function, to be executed later.
+#### What is a Callback?
 
-**Syntax:**
+A **callback** is a function that you give to another function, so that the other function can run it later. Think of it like leaving a note for someone saying "call me back when you're done" – hence the name "callback."
+
+**Why do we need callbacks?**
+
+JavaScript often needs to do things that take time (like waiting for a button click, loading an image, or running code for each item in a list). Instead of stopping everything and waiting, JavaScript uses callbacks to say: "Here's what to do when that thing happens."
+
+#### Simple Analogy
+
+Imagine you're at a restaurant:
+1. You give the waiter your order (this is like passing a callback)
+2. You don't stand in the kitchen waiting – you go back to your table
+3. When your food is ready, the waiter brings it to you (the callback gets executed)
+
+In code terms:
+- **You** = your main program
+- **The order** = the callback function
+- **The waiter** = the function that accepts callbacks
+- **Food arriving** = the callback being executed
+
+#### Basic Callback Example
+
+Let's break down a callback step by step:
+
 ```javascript
-// Passing a named function as callback
-someFunction(callbackFunction);
+// Step 1: Define a function that we want to run later
+function sayHello() {
+  console.log('Hello!');
+}
 
-// Passing an anonymous function as callback
-someFunction(function() {
-  // callback body
-});
+// Step 2: Use setTimeout, which accepts a callback
+// This says: "Run sayHello after 2000 milliseconds (2 seconds)"
+setTimeout(sayHello, 2000);
 
-// Passing an arrow function as callback
-someFunction(() => {
-  // callback body
+// The program continues immediately, it doesn't wait!
+console.log('This prints first, even though it comes after setTimeout');
+```
+
+**What happens:**
+1. `setTimeout` receives `sayHello` as a callback
+2. JavaScript continues running other code immediately
+3. After 2 seconds, `setTimeout` "calls back" and runs `sayHello`
+
+#### Passing Data to Callbacks
+
+Sometimes the function that uses your callback will give it some information. This is done through **parameters**.
+
+```javascript
+// This callback receives information about what button was pressed
+document.addEventListener('keydown', function(event) {
+  // 'event' contains information about the key press
+  // JavaScript fills in this value when the callback runs
+  console.log('You pressed:', event.code);
 });
 ```
 
-**Example from this game:**
+The `event` parameter is provided by `addEventListener` – you don't fill it in yourself. JavaScript says: "When a key is pressed, I'll call your function and give it details about the event."
+
+#### Callbacks with Arrays
+
+One of the most common uses of callbacks is with arrays. The `forEach` method runs your callback once for each item in the array:
+
 ```javascript
-// Using forEach with an arrow function callback
-obstacles.forEach((obstacle, index) => {
-  obstacle.update();
-  obstacle.draw();
+const fruits = ['apple', 'banana', 'cherry'];
+
+// forEach will call this function 3 times, once for each fruit
+fruits.forEach(function(fruit) {
+  console.log('I like ' + fruit);
 });
 
-// Event listener with callback
+// Output:
+// I like apple
+// I like banana
+// I like cherry
+```
+
+**How it works:**
+1. `forEach` looks at the first item (`'apple'`)
+2. It calls your callback function, passing `'apple'` as the `fruit` parameter
+3. Your callback runs and prints "I like apple"
+4. `forEach` moves to the next item and repeats
+
+#### Three Ways to Write Callbacks
+
+**1. Named function (defined separately):**
+```javascript
+function handleClick() {
+  console.log('Button clicked!');
+}
+document.getElementById('myButton').addEventListener('click', handleClick);
+```
+
+**2. Anonymous function (defined inline):**
+```javascript
+document.getElementById('myButton').addEventListener('click', function() {
+  console.log('Button clicked!');
+});
+```
+
+**3. Arrow function (shorter syntax):**
+```javascript
+document.getElementById('myButton').addEventListener('click', () => {
+  console.log('Button clicked!');
+});
+```
+
+All three do the same thing – they're just different ways to write the callback.
+
+#### Callbacks in This Game
+
+Here are real examples from the game code:
+
+**Example 1: Running code for each obstacle**
+```javascript
+// forEach calls this function for each obstacle in the array
+obstacles.forEach((obstacle, index) => {
+  obstacle.update();  // Move the obstacle
+  obstacle.draw();    // Draw it on screen
+});
+```
+- `obstacle` = the current obstacle being processed
+- `index` = which number obstacle this is (0, 1, 2, etc.)
+- The callback runs once for each obstacle in the `obstacles` array
+
+**Example 2: Responding to keyboard input**
+```javascript
+// When ANY key is pressed, run this callback
 document.addEventListener('keydown', (e) => {
+  // 'e' (event) tells us which key was pressed
   if (e.code === 'Space') {
-    dino.jump();
+    dino.jump();  // Make the dinosaur jump!
   }
 });
+```
+- `'keydown'` = the type of event to listen for
+- `(e) => { ... }` = the callback that runs when a key is pressed
+- `e.code` = which key was pressed (provided by the browser)
 
-// requestAnimationFrame with callback
+**Example 3: Animation loop**
+```javascript
+// requestAnimationFrame calls gameLoop about 60 times per second
+// This creates smooth animation
 animationId = requestAnimationFrame(gameLoop);
 ```
+- `gameLoop` is a function defined elsewhere in the code
+- The browser calls `gameLoop` when it's ready to draw the next frame
 
 📖 **MDN Reference:** [Callback Functions](https://developer.mozilla.org/en-US/docs/Glossary/Callback_function)
 
