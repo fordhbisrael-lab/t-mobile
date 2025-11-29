@@ -1,3 +1,6 @@
 {
-  "recommendations": ["ms-vscode.live-server"]
+  "recommendations": [
+    "ms-vscode.live-server",
+    "ms-vsliveshare.vsliveshare"
+  ]
 }
