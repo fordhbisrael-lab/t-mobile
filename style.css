@@ -58,3 +58,69 @@ body {
     padding: 2px 6px;
     border-radius: 3px;
 }
+
+/* Canvas wrapper for mobile controls positioning */
+.canvas-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Mobile control buttons */
+.mobile-btn {
+    position: absolute;
+    bottom: 10px;
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(83, 83, 83, 0.6);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    color: #535353;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: background 0.1s, transform 0.1s;
+}
+
+.mobile-btn:active {
+    background: rgba(83, 83, 83, 0.3);
+    transform: scale(0.95);
+}
+
+.jump-btn {
+    left: 10px;
+}
+
+.shoot-btn {
+    right: 10px;
+}
+
+/* Show mobile buttons on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .mobile-btn {
+        display: flex;
+    }
+}
+
+/* Responsive button sizing */
+@media (max-width: 600px) {
+    .mobile-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 400px) {
+    .mobile-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
